@@ -2,10 +2,47 @@ import logging as logger
 import os
 import sys
 import time
+import dialogflow
 
 import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'Pools-Agent-12-ae9f87bbd9b2.json'
+DIALOGFLOW_PROJECT_ID = 'pools-agent-12'
+DIALOGFLOW_LANGUAGE_CODE = 'en'
+SESSION_ID = 'me'
+
+class Dialogflow:
+    def __init__(self,text):
+        self.session_client = dialogflow.SessionsClient()
+        self.session = self.session_client.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
+        print(self.session)
+        pass
+    def get_kb_response(self, query):
+        text_input = dialogflow.types.TextInput(text=query, language_code=DIALOGFLOW_LANGUAGE_CODE)
+        print(text_input)
+        query = dialogflow.types.QueryInput(text=text_input)
+
+        try:
+            print(query)
+            response = self.session_client.detect_intent(session=self.session, query_input=query)
+            return response
+        except InvalidArgument as e:
+            print(f"something went wrong {e}")
+            pass
+        pass
+    pass
+
+
+        
+def _call_():
+    text = input("Enter your text")
+    print(text)
+    dialogflow = Dialogflow(text)
+    response = dialogflow.get_kb_response(text)
+    print(response)
+
 
 
 def prompt_c3po(text, file_name):
