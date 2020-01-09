@@ -54,7 +54,7 @@ def man():
             count += 1
             if transcription_response["error"]:
                 prompt_c3po("I'm having some trouble connecting to the internet", "error" + str(
-                    count) + "wav")
+                    count) + ".wav")
             else:
                 prompt_c3po("I can't hear you, please come again", "please_come_again.wav")
     else:
@@ -82,7 +82,7 @@ def recognise_stream(recogniser, microphone):
         logger.info("calling google to recognise speech")
         # set up the response object
         response = {
-            "success": True,
+            "success": None,
             "error": None,
             "transcription": None
         }
@@ -90,6 +90,7 @@ def recognise_stream(recogniser, microphone):
         try:
             logger.info("successful api call to google")
             response["transcription"] = recogniser.recognize_google(audio)
+            response["success"] = True
 
         except sr.RequestError:
             # API was unreachable or unresponsive
@@ -99,6 +100,7 @@ def recognise_stream(recogniser, microphone):
             # speech was unintelligible
             logger.warning("speech was unintelligible")
             response["error"] = "Unable to recognize speech"
+            response["success"] = True
 
         end_time = time.time() - start_time
         print("time elapsed: ", end_time)
