@@ -1,48 +1,15 @@
 import logging as logger
+import logging.config
 import os
 import sys
 import time
-import dialogflow
-
 import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
+from request import Dialogflow
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = 'Pools-Agent-12-ae9f87bbd9b2.json'
-DIALOGFLOW_PROJECT_ID = 'pools-agent-12'
-DIALOGFLOW_LANGUAGE_CODE = 'en'
-SESSION_ID = 'me'
-
-class Dialogflow:
-    def __init__(self,text):
-        self.session_client = dialogflow.SessionsClient()
-        self.session = self.session_client.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
-        print(self.session)
-        pass
-    def get_kb_response(self, query):
-        text_input = dialogflow.types.TextInput(text=query, language_code=DIALOGFLOW_LANGUAGE_CODE)
-        print(text_input)
-        query = dialogflow.types.QueryInput(text=text_input)
-
-        try:
-            print(query)
-            response = self.session_client.detect_intent(session=self.session, query_input=query)
-            return response
-        except InvalidArgument as e:
-            print(f"something went wrong {e}")
-            pass
-        pass
-    pass
-
-
-        
-def _call_():
-    text = input("Enter your text")
-    print(text)
-    dialogflow = Dialogflow(text)
-    response = dialogflow.get_kb_response(text)
-    print(response)
-
+# application configs goes here
+logger.config.fileConfig(os.path.dirname(__file__) + "/resources/config/logger.conf")
 
 
 def prompt_c3po(text, file_name):
@@ -66,7 +33,6 @@ def man():
     if choice == 1:
         # say greetings
         intro_message = "Hi! I'm c3PO, your rendezvous voice AI "
-        print("[c3po] " + intro_message)
         prompt_c3po(intro_message, "intro.wav")
 
         # live microphone stream
@@ -76,18 +42,25 @@ def man():
         count = 0
 
         while True:
-            prompt_c3po("say something, I'm listening", "say_something.wave")
-            response = recognise_stream(recognizer, microphone)
+            prompt_c3po("say something, I'm listening", "say_something.wav")
+            transcription_response = recognise_stream(recognizer, microphone)
 
-            if response["transcription"]:
-                print("[you] " + response["transcription"])
-
-                ## dialog flow goes here
-                return
-        count += 1
+            if transcription_response["transcription"]:
+                print("[you]: " + transcription_response["transcription"])
+                print("[c3po]: thinking")
+                dialog_flow_obj = Dialogflow(transcription_response["transcription"])
+                dialog_flow_respond = dialog_flow_obj.get_kb_response()
+                prompt_c3po(dialog_flow_respond.query_result.fulfillment_text, str(count) + ".wav")
+            count += 1
+            if transcription_response["error"]:
+                prompt_c3po("I'm having some trouble connecting to the internet", "error" + str(
+                    count) + "wav")
+            else:
+                prompt_c3po("I can't hear you, please come again", "please_come_again.wav")
     else:
         # recorded sample is live
         print("recorded sample is live")
+        return
 
 
 # Transcribe speech from recorded from `microphone`
@@ -106,8 +79,7 @@ def recognise_stream(recogniser, microphone):
         recogniser.adjust_for_ambient_noise(source)
         audio = recogniser.listen(source)
 
-        logger.info("calling google speech api")
-
+        logger.info("calling google to recognise speech")
         # set up the response object
         response = {
             "success": True,
@@ -122,26 +94,16 @@ def recognise_stream(recogniser, microphone):
         except sr.RequestError:
             # API was unreachable or unresponsive
             logger.warning("Api was 404")
-
             response["success"] = False
-            response["transcription"] = "I'm having some trouble connecting to the internet"
-
         except sr.UnknownValueError:
             # speech was unintelligible
             logger.warning("speech was unintelligible")
-
             response["error"] = "Unable to recognize speech"
-            response["transcription"] = "can you talk a little louder"
 
         end_time = time.time() - start_time
         print("time elapsed: ", end_time)
 
         return response
-
-
-# Get intent and its resolution from dialog flow
-def dialog_flow_respond(text):
-    return text
 
 
 # Play audio in audio path passed
