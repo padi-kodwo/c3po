@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Flask Shop</title>
+    <link rel="stylesheet" href="/static/index/style.css">
+  </head>
+  <body>
+    <h1>{{message}}</h1>
+
+    <h3>On sale this week alone:</h3>
+    <ol>
+      <li>Flask By Example</li>
+      <li>Uncluttered Flask</li>
+      <li>Flask From First Principles</li>
+    </ol>
+
+    <h4 id="version" style="color:white;">Backbone</h4>
+    
+
+    <script src="/static/index/index.js" charset="utf-8"></script>
+    <script src="/static/lib/backbone/underscore-min.js" charset="utf-8"></script>
+    <script src="/static/lib/backbone/backbone-min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+    document.getElementById("version").innerHTML = "Proudly built with Backbone.js version" + Backbone.VERSION;
+    </script>
+
+  </body>
+</html>
