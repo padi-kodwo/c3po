@@ -18,10 +18,14 @@ logger.config.fileConfig(os.path.dirname(__file__) + "/resource/config/logger.co
 
 
 # a route where we will display a welcome message via an HTML template
-@app.route("/")
-def hello():
+@app.route("/abcd")
+def index():
     message = "Welcome to the beautiful experience"
     return render_template('index.html', message=message)
+
+@app.route("/")
+def home():
+    return render_template("voice_ai.html")
 
 
 # the bot controller endpoint for all dialogue
@@ -47,6 +51,7 @@ def bot_controller():
         else:
             logger.info("request processing done and successful")
             return send_file(bot_audio_response)
+
 
 
 # run the application
