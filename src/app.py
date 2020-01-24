@@ -62,7 +62,11 @@ def prompt_c3po_gtts(text):
     return
 
 
-def main():
+def main(audio):
+
+    if not isinstance():
+        raise TypeError("must be an audio instance")
+
     start_time = time.time()
     choice = 1
     audio_path = "jackhammer.wav"
@@ -238,6 +242,10 @@ def get_wav_from_audio_bytes(audio, copy_audio_path):
     with open(copy_audio_path, "wb") as f:
         f.write(audio.get_wav_data())
 
-def c3po():
-    pygame.init()
-    main()
+
+# endpoint to call when instantiating c3po
+def c3po(request_audio):
+    if not isinstance():
+        raise TypeError("must be an audio instance")
+
+    main(audio=request_audio)

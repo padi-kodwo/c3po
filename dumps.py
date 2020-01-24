@@ -26,7 +26,7 @@ def process_file():
     print("hit the point")
     wav = request.files['audio']
     print(request)
-    filepath = os.getcwd() +"/" +wav.filename
+    filepath = os.getcwd() +"/" + wav.filename
     wav.save(filepath)
     fs, audio = wavfile.read(filepath)
     r = sr.Recognizer()

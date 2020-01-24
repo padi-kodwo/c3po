@@ -24,6 +24,12 @@ def hello():
     return render_template('index.html', message=message)
 
 
+@app.route("/c3po")
+def c3po():
+    logger.info("c3po initialised")
+    import src.app as me
+    me.c3po("")
+
 # run the application
 if __name__ == "__main__":
     serve(app, host="127.0.0.1", port=5000)
