@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config["DEBUG"] = True
 
 # configure the logging format
-logger.config.fileConfig(os.path.dirname(__file__) + "/resource/config/logger.conf")
+logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 
 # a route where we will display a welcome message via an HTML template

@@ -13,7 +13,7 @@ from gtts import gTTS
 # application configs goes here
 from src.request import Dialogflow
 
-logger.config.fileConfig(os.path.dirname(__file__) + "/resource/config/logger.conf")
+logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 # Globals
 recognizer = sr.Recognizer()
