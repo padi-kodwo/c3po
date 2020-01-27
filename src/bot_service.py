@@ -3,17 +3,16 @@ import logging.config
 import os
 import system_paths
 import time
-from io import BytesIO
 
 import speech_recognition as sr
 from gtts import gTTS
 
 
-
 # application configs goes here
 from src.request import Dialogflow
 
-logger.config.fileConfig(os.path.dirname(__file__) + "/resource/config/logger.conf")
+# configure the logging format
+logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 # Globals
 recognizer = sr.Recognizer()
@@ -21,17 +20,22 @@ recognizer = sr.Recognizer()
 
 def respond(wav_file_path):
     if os.path.isfile(wav_file_path):
-        logger.info("request audio found")
+        logger.info("request audio found in data store")
 
         transcription_response = recognise_recording(wav_file_path)
 
         if transcription_response["transcription"]:
-            print("[you]: " + transcription_response["transcription"])
+            logger.info("response from speech recognition is " + str(transcription_response["transcription"]))
+
             if transcription_response["transcription"]:
+                logger.info("about to call dialog flow speech response")
                 dialog_flow_obj = Dialogflow(transcription_response["transcription"])
+                logger.info("dialog flow obj created")
                 dialog_flow_respond = dialog_flow_obj.get_kb_response()
+                logger.info("response from dialog flow  is " + dialog_flow_respond)
                 return text_to_speech(dialog_flow_respond.query_result.fulfillment_text)
         else:
+
             if transcription_response["success"]:
                 return text_to_speech("I can't hear you, please come again")
             else:
@@ -46,11 +50,9 @@ def recognise_recording(audio_source_path):
     audio_file = sr.AudioFile(audio_source_path)
 
     with audio_file as source:
+        start_time = time.time()
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.record(source)
-
-        logger.info("waiting for google response(audio_file) ...")
-        start_time = time.time()
 
         logger.info("calling google to recognise audio speech")
         # set up the response object
@@ -75,8 +77,10 @@ def recognise_recording(audio_source_path):
             response["success"] = True
             response["error"] = "Unable to recognize speech"
 
-        end_time = time.time() - start_time
-        print("time elapsed: ", end_time)
+        duration = time.time() - start_time
+        logger.info("time elapsed: " +str(duration))
+
+        logger.info("done with speech recognition ")
 
         return response
 

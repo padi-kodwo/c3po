@@ -20,7 +20,6 @@ class Dialogflow:
         query = dialogflow.types.QueryInput(text=text_input)
 
         try:
-            #print(query)
             response = self.session_client.detect_intent(session=self.session, query_input=query)
             return response
         except InvalidArgument as e:

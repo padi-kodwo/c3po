@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config["DEBUG"] = True
 
 # configure the logging format
-logger.config.fileConfig(os.path.dirname(__file__) + "/resource/config/logger.conf")
+logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 
 # a route where we will display a welcome message via an HTML template
@@ -22,6 +22,7 @@ logger.config.fileConfig(os.path.dirname(__file__) + "/resource/config/logger.co
 def index():
     message = "Welcome to the beautiful experience"
     return render_template('index.html', message=message)
+
 
 @app.route("/")
 def home():
@@ -33,15 +34,18 @@ def home():
 def bot_controller():
     logger.info("about to process dialog audio")
     request_audio_wav = request.files['audio']
+    logger.info("done getting audio from request")
 
     # saving audio request to data store for processing
     import src.util.util as util
     wav_file = util.save_audio_request(request_audio_wav)
+    logger.info("audio saved successfully")
 
     if wav_file is None:
         logger.warning("error occurred while saving audio to data store")
         return None
     else:
+        logger.info("about to process audio for STT ")
         import src.bot_service as bot_service
         bot_audio_response = bot_service.respond(wav_file)
 
@@ -51,7 +55,6 @@ def bot_controller():
         else:
             logger.info("request processing done and successful")
             return send_file(bot_audio_response)
-
 
 
 # run the application
