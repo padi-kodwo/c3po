@@ -37,7 +37,7 @@ def bot_controller():
     logger.info("done getting audio from request")
 
     # saving audio request to data store for processing
-    import src.util.util as util
+    import src.util as util
     wav_file = util.save_audio_request(request_audio_wav)
     logger.info("audio saved successfully")
 
