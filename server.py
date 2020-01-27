@@ -18,7 +18,7 @@ logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 
 # a route where we will display a welcome message via an HTML template
-@app.route("/abcd")
+@app.route("/abc")
 def index():
     message = "Welcome to the beautiful experience"
     return render_template('index.html', message=message)
