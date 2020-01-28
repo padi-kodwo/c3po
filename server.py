@@ -19,7 +19,7 @@ logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 
 # a route where we will display a welcome message via an HTML template
-@app.route("/abcd")
+@app.route("/abc")
 def index():
     message = "Welcome to the beautiful experience"
     return render_template('index.html', message=message)
@@ -38,7 +38,7 @@ def bot_controller():
     logger.info("done getting audio from request")
 
     # saving audio request to data store for processing
-    import src.util.util as util
+    import src.util as util
     wav_file = util.save_audio_request(request_audio_wav)
     logger.info("audio saved successfully")
 

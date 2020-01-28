@@ -30,10 +30,14 @@ def respond(wav_file_path):
             if transcription_response["transcription"]:
                 logger.info("about to call dialog flow speech response")
                 dialog_flow_obj = Dialogflow(transcription_response["transcription"])
-                logger.info("dialog flow obj created")
                 dialog_flow_respond = dialog_flow_obj.get_kb_response()
-                logger.info("response from dialog flow  is " + dialog_flow_respond)
-                return text_to_speech(dialog_flow_respond.query_result.fulfillment_text), transcription_response["transcription"]
+                logger.info("about to get audio response")
+                if dialog_flow_respond.query_result.fulfillment_text is None or dialog_flow_respond.query_result.fulfillment_text is "":
+                    logger.info("response fulfilment was empty or None")
+                    return text_to_speech("Haha")
+                else:
+                    return text_to_speech(dialog_flow_respond.query_result.fulfillment_text)
+
         else:
 
             if transcription_response["success"]:
@@ -86,8 +90,15 @@ def recognise_recording(audio_source_path):
 
 
 def text_to_speech(text):
+    logger.info("about to synthesis text audio ")
+    file_destination = os.path.join(system_paths.data_store, "response.wav")
     language = "en"
+
     text_audio = gTTS(text=text, lang=language, slow=False)
+    logger.info("audio fp return from google")
+    text_audio.save(os.path.join(system_paths.data_store, file_destination))
+    logger.info("done synthesising text to audio")
 
     return text_audio
+
 
