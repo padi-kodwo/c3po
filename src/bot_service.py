@@ -33,17 +33,17 @@ def respond(wav_file_path):
                 logger.info("dialog flow obj created")
                 dialog_flow_respond = dialog_flow_obj.get_kb_response()
                 logger.info("response from dialog flow  is " + dialog_flow_respond)
-                return text_to_speech(dialog_flow_respond.query_result.fulfillment_text)
+                return text_to_speech(dialog_flow_respond.query_result.fulfillment_text), transcription_response["transcription"]
         else:
 
             if transcription_response["success"]:
-                return text_to_speech("I can't hear you, please come again")
+                return text_to_speech("I can't hear you, please come again"), None
             else:
-                return text_to_speech("I'm having some trouble connecting to the internet")
+                return text_to_speech("I'm having some trouble connecting to the internet"), None
 
     else:
         logger.warning(str(wav_file_path) + " not found in file system")
-        return None
+        return None, None
 
 
 def recognise_recording(audio_source_path):

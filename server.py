@@ -4,15 +4,16 @@ import logging.config
 import time
 import os
 import system_paths
-
+from flask_cors import CORS
 from waitress import serve
-from flask import Flask, render_template, request, send_file, redirect
+from flask import Flask, render_template, request, send_file, redirect, jsonify
 
 
 # creates a Flask application, named app
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
+CORS(app)
 # configure the logging format
 logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
@@ -47,14 +48,19 @@ def bot_controller():
     else:
         logger.info("about to process audio for STT ")
         import src.bot_service as bot_service
-        bot_audio_response = bot_service.respond(wav_file)
+        bot_audio_response, text = bot_service.respond(wav_file)
 
         if bot_audio_response is None:
             logger.warning("error while responding to speech request")
 
         else:
             logger.info("request processing done and successful")
-            return send_file(bot_audio_response)
+            # replace with server ip and port
+            return jsonify(
+                audio="http://localhost:5000/static/audio_response/temp.wav",
+                response_text="hello world",
+                transcribed_text=text
+            )
 
 
 # run the application
