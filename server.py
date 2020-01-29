@@ -5,7 +5,7 @@ import time
 import system_paths
 from flask_cors import CORS
 from waitress import serve
-from flask import Flask, render_template, request, send_file, redirect, jsonify
+from flask import Flask, render_template, request, jsonify
 
 
 # creates a Flask application, named app
@@ -47,16 +47,17 @@ def bot_controller():
     else:
         logger.info("about to process audio for STT ")
         import src.bot_service as bot_service
-        bot_audio_response, response_text, transcribed_text = bot_service.respond(wav_file)
+        bot_audio_response_file, response_text, transcribed_text = bot_service.respond(wav_file)
 
-        if bot_audio_response is None:
+        if bot_audio_response_file is None:
             logger.warning("error while responding to speech request")
 
         else:
             logger.info("request processing done and successful")
-            # replace with server ip and port
+            audio = "http://localhost:5000/static/audio_response/" + bot_audio_response_file
+
             return jsonify(
-                audio="http://localhost:5000/static/audio_response/response.wav",
+                audio=audio,
                 response_text=response_text,
                 transcribed_text=transcribed_text
             )
