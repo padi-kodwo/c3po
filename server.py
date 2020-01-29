@@ -48,7 +48,7 @@ def bot_controller():
     else:
         logger.info("about to process audio for STT ")
         import src.bot_service as bot_service
-        bot_audio_response, text = bot_service.respond(wav_file)
+        bot_audio_response, response_text, transcribed_text = bot_service.respond(wav_file)
 
         if bot_audio_response is None:
             logger.warning("error while responding to speech request")
@@ -58,8 +58,8 @@ def bot_controller():
             # replace with server ip and port
             return jsonify(
                 audio="http://localhost:5000/static/audio_response/response.wav",
-                response_text="hello world",
-                transcribed_text=text
+                response_text=response_text,
+                transcribed_text=transcribed_text
             )
 
 

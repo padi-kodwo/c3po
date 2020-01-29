@@ -34,20 +34,25 @@ def respond(wav_file_path):
                 logger.info("about to get audio response")
                 if dialog_flow_respond.query_result.fulfillment_text is None or dialog_flow_respond.query_result.fulfillment_text is "":
                     logger.info("response fulfilment was empty or None")
-                    return text_to_speech("Haha")
+                    return text_to_speech("Haha haha haaha"), "Haha haha haaha", None
                 else:
-                    return text_to_speech(dialog_flow_respond.query_result.fulfillment_text)
+                    response_text = dialog_flow_respond.query_result.fulfillment_text
+                    transcribed_text = str(transcription_response["transcription"])
+                    return text_to_speech(response_text), response_text, transcribed_text
 
         else:
 
             if transcription_response["success"]:
-                return text_to_speech("I can't hear you, please come again"), None
+                text = "I can't hear you, please come again"
+                return text_to_speech(text), text, None
             else:
-                return text_to_speech("I'm having some trouble connecting to the internet"), None
+                text = "I'm having some trouble connecting to the internet"
+                return text_to_speech(text), text, None
 
     else:
         logger.warning(str(wav_file_path) + " not found in file system")
-        return None, None
+        text = "Hmm I just crashed"
+        return text_to_speech(text), text, None
 
 
 def recognise_recording(audio_source_path):
