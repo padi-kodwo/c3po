@@ -2,7 +2,6 @@
 import logging as logger
 import logging.config
 import time
-import os
 import system_paths
 from flask_cors import CORS
 from waitress import serve
