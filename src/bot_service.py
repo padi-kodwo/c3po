@@ -3,16 +3,15 @@ import logging.config
 import os
 import system_paths
 import time
-from io import BytesIO
 
 import speech_recognition as sr
 from gtts import gTTS
 
 
-
 # application configs goes here
 from src.request import Dialogflow
 
+# configure the logging format
 logger.config.fileConfig(system_paths.resource + "/config/logger.conf")
 
 # Globals
@@ -21,36 +20,48 @@ recognizer = sr.Recognizer()
 
 def respond(wav_file_path):
     if os.path.isfile(wav_file_path):
-        logger.info("request audio found")
+        logger.info("request audio found in data store")
 
         transcription_response = recognise_recording(wav_file_path)
 
         if transcription_response["transcription"]:
-            print("[you]: " + transcription_response["transcription"])
+            logger.info("response from speech recognition is " + str(transcription_response["transcription"]))
+
             if transcription_response["transcription"]:
+                logger.info("about to call dialog flow speech response")
                 dialog_flow_obj = Dialogflow(transcription_response["transcription"])
                 dialog_flow_respond = dialog_flow_obj.get_kb_response()
-                return text_to_speech(dialog_flow_respond.query_result.fulfillment_text)
+                logger.info("about to get audio response")
+                if dialog_flow_respond.query_result.fulfillment_text is None or dialog_flow_respond.query_result.fulfillment_text is "":
+                    logger.info("response fulfilment was empty or None")
+                    return text_to_speech("Haha haha haaha"), "Haha haha haaha", None
+                else:
+                    response_text = dialog_flow_respond.query_result.fulfillment_text
+                    transcribed_text = str(transcription_response["transcription"])
+                    return text_to_speech(response_text), response_text, transcribed_text
+
         else:
+
             if transcription_response["success"]:
-                return text_to_speech("I can't hear you, please come again")
+                text = "I can't hear you, please come again"
+                return text_to_speech(text), text, None
             else:
-                return text_to_speech("I'm having some trouble connecting to the internet")
+                text = "I'm having some trouble connecting to the internet"
+                return text_to_speech(text), text, None
 
     else:
         logger.warning(str(wav_file_path) + " not found in file system")
-        return None
+        text = "Hmm I just crashed"
+        return text_to_speech(text), text, None
 
 
 def recognise_recording(audio_source_path):
     audio_file = sr.AudioFile(audio_source_path)
 
     with audio_file as source:
+        start_time = time.time()
         recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.record(source)
-
-        logger.info("waiting for google response(audio_file) ...")
-        start_time = time.time()
 
         logger.info("calling google to recognise audio speech")
         # set up the response object
@@ -75,15 +86,24 @@ def recognise_recording(audio_source_path):
             response["success"] = True
             response["error"] = "Unable to recognize speech"
 
-        end_time = time.time() - start_time
-        print("time elapsed: ", end_time)
+        duration = time.time() - start_time
+        logger.info("time elapsed: " +str(duration))
+
+        logger.info("done with speech recognition ")
 
         return response
 
 
 def text_to_speech(text):
+    logger.info("about to synthesis text audio ")
+    file_destination = os.path.join(system_paths.response, "response.wav")
     language = "en"
+
     text_audio = gTTS(text=text, lang=language, slow=False)
+    logger.info("audio fp return from google")
+    text_audio.save(os.path.join(system_paths.data_store, file_destination))
+    logger.info("done synthesising text to audio")
 
     return text_audio
+
 
