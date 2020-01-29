@@ -91,7 +91,7 @@ def recognise_recording(audio_source_path):
 
 def text_to_speech(text):
     logger.info("about to synthesis text audio ")
-    file_destination = os.path.join(system_paths.data_store, "response.wav")
+    file_destination = os.path.join(system_paths.response, "response.wav")
     language = "en"
 
     text_audio = gTTS(text=text, lang=language, slow=False)

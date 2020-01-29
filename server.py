@@ -38,7 +38,7 @@ def bot_controller():
     logger.info("done getting audio from request")
 
     # saving audio request to data store for processing
-    import src.util as util
+    import src.util.util as util
     wav_file = util.save_audio_request(request_audio_wav)
     logger.info("audio saved successfully")
 
@@ -57,7 +57,7 @@ def bot_controller():
             logger.info("request processing done and successful")
             # replace with server ip and port
             return jsonify(
-                audio="http://localhost:5000/static/audio_response/temp.wav",
+                audio="http://localhost:5000/static/audio_response/response.wav",
                 response_text="hello world",
                 transcribed_text=text
             )
