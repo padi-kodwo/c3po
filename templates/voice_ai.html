@@ -378,8 +378,11 @@
                    more@3x.png 3x"
                    class="more">
 
-              </div>
-              <p id="response"></p>
+            </div>
+
+           <p id="request"></p>
+           <p id="response"></p>
+
        </div>
    </div>
    </div>
@@ -472,7 +475,8 @@ $.ajax({
         // alert(response);
         console.log(response);
         let audio = new Audio(response.audio);
-        $("#response").append(response.response_text);
+        $("#request").append("[you] " + response.transcribed_text);
+        $("#response").append("[c3p0] " + response.response_text);
         audio.play();
     }
 });

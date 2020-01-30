@@ -3,6 +3,7 @@ import logging.config
 import os
 import system_paths
 import time
+import uuid
 
 import speech_recognition as sr
 from gtts import gTTS
@@ -29,25 +30,34 @@ def respond(wav_file_path):
 
             if transcription_response["transcription"]:
                 logger.info("about to call dialog flow speech response")
+
                 dialog_flow_obj = Dialogflow(transcription_response["transcription"])
                 dialog_flow_respond = dialog_flow_obj.get_kb_response()
+
                 logger.info("about to get audio response")
                 if dialog_flow_respond.query_result.fulfillment_text is None or dialog_flow_respond.query_result.fulfillment_text is "":
                     logger.info("response fulfilment was empty or None")
-                    return text_to_speech("Haha")
+                    return text_to_speech("Haha haha haaha"), "Haha haha haaha", str(transcription_response["transcription"])
                 else:
-                    return text_to_speech(dialog_flow_respond.query_result.fulfillment_text)
+                    response_text = dialog_flow_respond.query_result.fulfillment_text
+                    transcribed_text = str(transcription_response["transcription"])
+
+                    return text_to_speech(response_text), response_text, transcribed_text
 
         else:
 
             if transcription_response["success"]:
-                return text_to_speech("I can't hear you, please come again"), None
+                text = "I can't hear you, please come again"
+                return text_to_speech(text), text, None
             else:
-                return text_to_speech("I'm having some trouble connecting to the internet"), None
+                text = "I'm having some trouble connecting to the internet"
+                return text_to_speech(text), text, None
 
     else:
         logger.warning(str(wav_file_path) + " not found in file system")
-        return None, None
+        text = "Hmm I just crashed"
+
+        return text_to_speech(text), text, None
 
 
 def recognise_recording(audio_source_path):
@@ -91,14 +101,15 @@ def recognise_recording(audio_source_path):
 
 def text_to_speech(text):
     logger.info("about to synthesis text audio ")
-    file_destination = os.path.join(system_paths.response, "response.wav")
+    response_file = str(uuid.uuid4().hex) + ".wav"
+    file_destination = os.path.join(system_paths.response, response_file)
     language = "en"
 
     text_audio = gTTS(text=text, lang=language, slow=False)
     logger.info("audio fp return from google")
     text_audio.save(os.path.join(system_paths.data_store, file_destination))
-    logger.info("done synthesising text to audio")
+    logger.info("done synthesising text to audio to destination " + file_destination)
 
-    return text_audio
+    return response_file
 
 
