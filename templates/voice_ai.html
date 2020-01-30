@@ -396,17 +396,17 @@
 URL = window.URL || window.webkitURL;
 var gumStream;
 //stream from getUserMedia()
-var rec;
+    var rec;
 //Recorder.js object
-var input;
-var audioChunks;
+    var input;
+    var audioChunks;
 //MediaStreamAudioSourceNode we'll be recording
 // shim for AudioContext when it's not avb.
-var AudioContext = window.AudioContext || window.webkitAudioContext;
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
 
 //new audio context to help us record
-var record= document.getElementById("record");
-record.addEventListener("click", startRecording);
+    var record= document.getElementById("record");
+    record.addEventListener("click", startRecording);
 function startRecording() {
 	console.log("record clicked");
 	$("#first").addClass('hide');

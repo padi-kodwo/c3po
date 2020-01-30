@@ -11,6 +11,10 @@
     <orderEntry type="library" name="jquery" level="application" />
     <orderEntry type="library" name="recorder" level="application" />
     <orderEntry type="library" name="socket.io.dev" level="application" />
+    <orderEntry type="library" name="jquery-3.4.1" level="application" />
+    <orderEntry type="library" name="jquery" level="application" />
+    <orderEntry type="library" name="socket.io.dev" level="application" />
+    <orderEntry type="library" name="recorder" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
