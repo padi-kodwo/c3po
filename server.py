@@ -26,7 +26,7 @@ def index():
 
 @app.route("/")
 def home():
-    return render_template("voice_ai.html")
+    return render_template("new_ui.html")
 
 
 # the bot controller endpoint for all dialogue

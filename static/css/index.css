@@ -1,7 +1,7 @@
 body{
     margin:0;
     padding:0;
-    background-color: whitesmoke;
+    background-color: white;
     height: 100vh;
     overflow: hidden;
 
@@ -91,19 +91,22 @@ body{
 
 
 .user__callout{
-      width: 330px;
-  height: 83px;
-  border-radius: 8px;
-  background-color: #f2f2f2;
+    max-width: 340px;
+    border-radius: 0 12px 12px 12px;
+    background-color: darkred;
     margin: 8px;
+    float: left;
+    padding: 16px;
+    flex-wrap: wrap;
 }
 
 
 .bot__callout{
-    width: 133px;
-  height: 54px;
-  border-radius: 8px;
-  background-color: #262c6e;
+    max-width: 340px;
+    border-radius: 12px 0 12px 12px;
+    background-color: #262c6e;
     margin: 8px;
     float: right;
+    padding: 16px;
+    flex-wrap: wrap;
 }
