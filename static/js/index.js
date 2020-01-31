@@ -1,6 +1,6 @@
 let gumStream;
 let input;
-let audioChunks;
+let URL = window.URL || window.webkitURL;
 let AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext;
 let rec;
@@ -9,19 +9,22 @@ let chatContainer = $("#chat_container");
 
 let micIndicator = $("#mic__indicator");
 let micText = $("#mic__text");
+let record =  $("#record");
+
+record.on('click', ()=>{startRecording()});
 
 $(document).ready((e)=>{
     console.log("document is ready for first time");
     chatContainer.append(getBotBubble("Hello"));
-    startRecording();
+
 });
 
 function startRecording() {
     console.log("Recording Started");
-     micIndicator.css("background-color", "red");
+    micIndicator.css("background-color", "red");
     micText.html("Im listening to you");
-    let constraint = {audio: true, video: false};
 
+    let constraint = {audio: true, video: false};
 
 
     navigator.mediaDevices.getUserMedia(constraint).then((stream)=> {
@@ -29,6 +32,7 @@ function startRecording() {
         input = audioContext.createMediaStreamSource(stream);
 
         rec = new Recorder(input, {numChannels: 1});
+
         rec.record();
 
         setTimeout(()=>{
@@ -45,6 +49,9 @@ function sendData(blob) {
     let fileType = 'audio';
     let fileName = 'sound.wav';
     let formData = new FormData();
+    const audio = new Audio(url);
+
+    audio.play().then(r => console.log(r));
 
     formData.append(fileType, blob, fileName);
     console.log(...formData);
@@ -70,8 +77,8 @@ function sendData(blob) {
 
 
 
-        audio.play();
-        startRecording();
+        // audio.play();
+
     }
 });
 
