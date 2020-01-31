@@ -12,7 +12,8 @@ var AudioContext = window.AudioContext || window.webkitAudioContext;
 
 //new audio context to help us record
 var record= document.getElementById("record");
-record.addEventListener("click", startRecording);
+record.addEventListener("click", startRecording());
+
 function startRecording() {
 	console.log("record clicked");
 	$("#first").addClass('hide');
