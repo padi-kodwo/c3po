@@ -1,8 +1,6 @@
 let gumStream;
 let input;
 let URL = window.URL || window.webkitURL;
-let AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioContext = new AudioContext;
 let rec;
 
 let chatContainer = $("#chat_container");
@@ -24,10 +22,15 @@ function startRecording() {
     micIndicator.css("background-color", "red");
     micText.html("Im listening to you");
 
-    let constraint = {audio: true, video: false};
 
 
-    navigator.mediaDevices.getUserMedia(constraint).then((stream)=> {
+    let constraints = {audio: true, video: false};
+
+    let AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    let audioContext = new AudioContext;
+
+    navigator.mediaDevices.getUserMedia(constraints).then((stream)=> {
         gumStream = stream;
         input = audioContext.createMediaStreamSource(stream);
 
@@ -38,7 +41,9 @@ function startRecording() {
         setTimeout(()=>{
             rec.stop();
             gumStream.getAudioTracks()[0].stop();
-            rec.exportWAV(sendData)
+            rec.exportWAV((data)=>{
+                sendData(data);
+            })
         }, 5000);
     })
 }

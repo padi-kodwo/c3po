@@ -4,13 +4,17 @@ body{
     background-color: white;
     height: 100vh;
     overflow: hidden;
-
+    font-family: "AnjaliOldLipi", sans-serif;
 }
 
 .header{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
     height: 70px;
     background-color: white;
-    box-shadow: 0 2px 10px 4px gainsboro;
+    /*box-shadow: 0 2px 2px 2px #f6f6f6;*/
     border-bottom: 1px solid gainsboro;
     display: flex;
     flex-direction: row;
@@ -28,9 +32,17 @@ body{
     flex-direction: row;
     flex: 1;
     height: calc(100vh - 70px);
-    padding: 32px;
+    padding:0 32px;
 }
 
+.notif__header{
+    height: 50px;
+    background-color: red;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    margin-top: 70px;
+}
 
 .mic__img{
     width: 20px;
@@ -41,6 +53,7 @@ body{
 .mic__wrapper{
     display: flex;
     flex-direction: row;
+    margin-top: 32px;
 }
 
 .mic__indicator{

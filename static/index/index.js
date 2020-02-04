@@ -17,7 +17,7 @@ function startRecording() {
 	console.log("record clicked");
 	$("#first").addClass('hide');
 $("#loading").removeClass('hide');
-    var constraints = { audio: true, video:false }
+    var constraints = { audio: true, video:false };
 	var audioContext = new AudioContext();
 	navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
 		console.log("getUserMedia() success, stream created, initializing Recorder.js ...");
@@ -25,13 +25,13 @@ $("#loading").removeClass('hide');
 		gumStream = stream;
 		input = audioContext.createMediaStreamSource(stream);
 
-		rec = new Recorder(input,{numChannels:1})
+		rec = new Recorder(input,{numChannels:1});
 		 rec.record();
         console.log("Recording started");
 
     setTimeout(function(){
         rec.stop();
-        console.log("Recording stopped")
+        console.log("Recording stopped");
          gumStream.getAudioTracks()[0].stop();
     //create the wav blob and pass it on to createDownloadLink
          rec.exportWAV(createDownloadLink);
